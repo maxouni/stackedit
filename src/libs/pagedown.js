@@ -5,6 +5,8 @@ var util = {},
   };
 
 var defaultsStrings = {
+  article: "",
+
   bold: "Strong <strong> Ctrl/Cmd+B",
   boldexample: "strong text",
 
@@ -72,6 +74,8 @@ function Pagedown(options) {
   }
   options.strings = options.strings || {};
   var getString = function (identifier) {
+    window.console.log(defaultsStrings);
+    window.console.log(identifier);
     return options.strings[identifier] || defaultsStrings[identifier];
   };
 
@@ -120,6 +124,7 @@ function Pagedown(options) {
   hooks.addNoop("onPreviewRefresh"); // called with no arguments after the preview has been refreshed
   hooks.addNoop("postBlockquoteCreation"); // called with the user's selection *after* the blockquote was created; should return the actual to-be-inserted text
   hooks.addFalse("insertImageDialog");
+  hooks.addFalse("insertArticleDialog");
   /* called with one parameter: a callback to be called with the URL of the image. If the application creates
    * its own image insertion dialog, this hook should return true, and the callback should be called with the chosen
    * image url (or null if the user cancelled). If this hook returns false, the default dialog will be used.
@@ -376,6 +381,7 @@ function TextareaState(input) {
 
   // Sets the TextareaState properties given a chunk of markdown.
   this.setChunks = function (chunk) {
+    window.console.log(chunk);
 
     chunk.before = chunk.before + chunk.startTag;
     chunk.after = chunk.endTag + chunk.after;
@@ -432,7 +438,7 @@ function UIManager(input, commandManager) {
     var fixupInputArea = function () {
 
       inputBox.focus();
-
+      window.console.log(chunks);
       if (chunks) {
         state.setChunks(chunks);
       }
@@ -480,6 +486,9 @@ function UIManager(input, commandManager) {
     buttons.heading = bindCommand("doHeading");
     buttons.hr = bindCommand("doHorizontalRule");
     buttons.table = bindCommand("doTable");
+    buttons.article = bindCommand(function (chunk, postProcessing) {
+      return this.doArticle(chunk, postProcessing);
+    });
   }
 
   this.doClick = doClick;
@@ -704,8 +713,54 @@ function properlyEncoded(linkdef) {
   });
 }
 
-commandProto.doLinkOrImage = function (chunk, postProcessing, isImage) {
+commandProto.doArticle = function (chunk, postProcessing) {
+  chunk.trimWhitespace();
+  //chunk.findTags(/\s*!?\[/, /\][ ]?(?:\n[ ]*)?(\[.*?\])?/);
+  chunk.findTags(/\s*!?\[/, /\][ ]?(?:\n[ ]*)?(\(.*?\))?/);
 
+  if (chunk.endTag.length > 1 && chunk.startTag.length > 0) {
+
+    chunk.startTag = chunk.startTag.replace(/!?\[/, "");
+    chunk.endTag = "";
+    this.addLinkDef(chunk, null);
+
+  } else {
+
+    // We're moving start and end tag back into the selection, since (as we're in the else block) we're not
+    // *removing* a link, but *adding* one, so whatever findTags() found is now back to being part of the
+    // link text. linkEnteredCallback takes care of escaping any brackets.
+    chunk.selection = chunk.startTag + chunk.selection + chunk.endTag;
+    chunk.startTag = chunk.endTag = "";
+
+    if (/\n\n/.test(chunk.selection)) {
+      this.addLinkDef(chunk, null);
+      return;
+    }
+    var that = this;
+    // The function to be executed when you enter a link and press OK or Cancel.
+    // Marks up the link and adds the ref.
+    var articleEnteredCallback = function (text) {
+
+      if (text) {
+        chunk.selection = (" " + chunk.selection).replace(/([^\\](?:\\\\)*)(?=[[\]])/g, "$1\\").substr(1);
+        chunk.startTag = "Article[";
+        chunk.endTag = "](" + JSON.stringify(text) + ")";
+
+        if (!chunk.selection) {
+          chunk.selection = that.getString("article");
+        }
+      }
+
+      postProcessing();
+    };
+
+    this.hooks.insertArticleDialog(articleEnteredCallback);
+
+    return true;
+  }
+};
+
+commandProto.doLinkOrImage = function (chunk, postProcessing, isImage) {
   chunk.trimWhitespace();
   //chunk.findTags(/\s*!?\[/, /\][ ]?(?:\n[ ]*)?(\[.*?\])?/);
   chunk.findTags(/\s*!?\[/, /\][ ]?(?:\n[ ]*)?(\(.*?\))?/);

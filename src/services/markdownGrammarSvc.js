@@ -267,6 +267,12 @@ export default {
         },
       },
     };
+    rest.article = {
+      pattern: /Article\[.*?\]\(.+?\)/g,
+      inside: {
+        'cl cl-title cl-article': /['‘][^'’]*['’]|["“][^"”]*["”](?=\)$)/,
+      },
+    };
     rest.link = {
       pattern: /\[.*?\]\(.+?\)/gm,
       inside: {

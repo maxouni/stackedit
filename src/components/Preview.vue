@@ -170,4 +170,21 @@ $corner-size: 110px;
     }
   }
 }
+
+.preview {
+  .article {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 30px;
+
+    &__title {
+      font-weight: bold;
+      color: blue;
+    }
+
+    &__authors {
+      color: gray;
+    }
+  }
+}
 </style>

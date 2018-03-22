@@ -68,6 +68,7 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
    * Initialize the Prism grammar with the options
    */
   initPrism() {
+    window.console.log('initPrism');
     const options = {
       ...this.options,
       insideFences: markdownConversionSvc.defaultOptions.insideFences,
@@ -79,6 +80,7 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
    * Initialize the markdown-it converter with the options
    */
   initConverter() {
+    window.console.log('initConverter');
     this.converter = markdownConversionSvc.createConverter(this.options, true);
   },
 
@@ -86,6 +88,7 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
    * Initialize the cledit editor with markdown-it section parser and Prism highlighter
    */
   initClEditor() {
+    window.console.log('initClEditor');
     this.previewCtxMeasured = null;
     editorSvc.$emit('previewCtxMeasured', null);
     this.previewCtxWithDiffs = null;
@@ -121,6 +124,7 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
    * Refresh the preview with the result of `convert()`
    */
   refreshPreview() {
+    window.console.log(this.conversionCtx.sectionList);
     const sectionDescList = [];
     let sectionPreviewElt;
     let sectionTocElt;
@@ -133,6 +137,9 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
     this.conversionCtx.htmlSectionDiff.forEach((item) => {
       for (let i = 0; i < item[1].length; i += 1) {
         const section = this.conversionCtx.sectionList[sectionIdx];
+        /**
+         * ##
+         * */
         if (item[0] === 0) {
           let sectionDesc = this.previewCtx.sectionDescList[sectionDescIdx];
           sectionDescIdx += 1;
@@ -376,6 +383,14 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
       return true;
     });
 
+    this.pagedownEditor.hooks.set('insertArticleDialog', (callback) => {
+      store.dispatch('modal/open', {
+        type: 'article',
+        callback,
+      });
+      return true;
+    });
+
     this.editorElt.parentNode.addEventListener('scroll', () => this.saveContentState(true));
     this.previewElt.parentNode.addEventListener('scroll', () => this.saveContentState(true));
 
@@ -454,9 +469,12 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
     }, 100);
 
     let imgEltsToCache = [];
+
+
     if (store.getters['data/computedSettings'].editor.inlineImages) {
       this.clEditor.highlighter.on('sectionHighlighted', (section) => {
         section.elt.getElementsByClassName('token img').cl_each((imgTokenElt) => {
+          window.console.log(imgTokenElt);
           const srcElt = imgTokenElt.querySelector('.token.cl-src');
           if (srcElt) {
             // Create an img element before the .img.token and wrap both elements

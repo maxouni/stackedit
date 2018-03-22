@@ -225,12 +225,26 @@ const markdownConversionSvc = {
       parsingCtx.markdownCoreRules.slice(2).forEach(rule => rule(parsingCtx.markdownState));
       parsingCtx.markdownState.isConverted = true;
     }
+
+    const articlesJson = [];
+    const result = parsingCtx.text.match(/Article\[.*?\]\((.+?)\)/g);
+    if (result) {
+      result.forEach((item) => {
+        const itemReg = /Article\[.*?\]\((.+?)\)/g.exec(item);
+        if (itemReg) {
+          articlesJson.push(JSON.parse(JSON.parse(itemReg[1])));
+        }
+      });
+    }
+    window.console.log(articlesJson);
+
     const tokens = parsingCtx.markdownState.tokens;
     const html = parsingCtx.converter.renderer.render(
       tokens,
       parsingCtx.converter.options,
       parsingCtx.markdownState.env,
     );
+
     const htmlSectionList = html.split(htmlSectionMarker);
     if (htmlSectionList[0] === '') {
       htmlSectionList.shift();
@@ -248,6 +262,20 @@ const markdownConversionSvc = {
         [1, newSectionHash],
       ];
     }
+
+    let currentIndex = 0;
+    htmlSectionList.forEach((item, index) => {
+      if (/Article\[.*?\]\((.+?)\)/g.exec(item)) {
+        const article = articlesJson[currentIndex].article;
+        currentIndex += 1;
+        htmlSectionList[index] = `<article class="article">
+          <div class="article__title"><a href="https://apograf.io/articles/${article.id}">${article.title}</a></div>
+          <div class="article__authors">${article.authors.join(', ')}</div>
+          <div class="article__publication">${article['publication-name']}</div>
+          </article>`;
+      }
+    });
+
     return {
       text: parsingCtx.text,
       sectionList: parsingCtx.sectionList,

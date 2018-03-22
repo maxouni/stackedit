@@ -23,6 +23,7 @@ import HtmlExportModal from './modals/HtmlExportModal';
 import PdfExportModal from './modals/PdfExportModal';
 import PandocExportModal from './modals/PandocExportModal';
 import LinkModal from './modals/LinkModal';
+import ArticleModal from './modals/ArticleModal';
 import ImageModal from './modals/ImageModal';
 import SyncManagementModal from './modals/SyncManagementModal';
 import PublishManagementModal from './modals/PublishManagementModal';
@@ -72,6 +73,7 @@ export default {
     PublishManagementModal,
     WorkspaceManagementModal,
     SponsorModal,
+    ArticleModal,
     // Providers
     GooglePhotoModal,
     GoogleDriveAccountModal,

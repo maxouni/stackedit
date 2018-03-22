@@ -49,6 +49,7 @@ import Message from './Message';
 import History from './History';
 import Database from './Database';
 import Magnify from './Magnify';
+import Article from './Article';
 
 Vue.component('iconProvider', Provider);
 Vue.component('iconFormatBold', FormatBold);
@@ -100,3 +101,4 @@ Vue.component('iconMessage', Message);
 Vue.component('iconHistory', History);
 Vue.component('iconDatabase', Database);
 Vue.component('iconMagnify', Magnify);
+Vue.component('iconArticle', Article);

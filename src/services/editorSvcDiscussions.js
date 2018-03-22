@@ -138,6 +138,7 @@ export default {
     clEditor.on('focus', () => store.commit('discussion/setNewCommentFocus', false));
   },
   initClEditorInternal(opts) {
+    window.console.log('initClEditorInternal');
     const content = store.getters['content/current'];
     if (content) {
       removeDiscussionMarkers(); // Markers will be recreated on contentChanged

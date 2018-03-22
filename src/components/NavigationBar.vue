@@ -48,6 +48,7 @@
       <button class="navigation-bar__button button" @click="pagedownClick('code')" v-title="'Code'"><icon-code-tags></icon-code-tags></button>
       <button class="navigation-bar__button button" @click="pagedownClick('link')" v-title="'Link'"><icon-link-variant></icon-link-variant></button>
       <button class="navigation-bar__button button" @click="pagedownClick('image')" v-title="'Image'"><icon-file-image></icon-file-image></button>
+      <button class="navigation-bar__button button" @click="pagedownClick('article')" v-title="'Article'"><icon-article></icon-article></button>
       <button class="navigation-bar__button button" @click="pagedownClick('hr')" v-title="'Horizontal rule'"><icon-format-horizontal-rule></icon-format-horizontal-rule></button>
     </div>
   </nav>

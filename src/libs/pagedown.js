@@ -74,8 +74,6 @@ function Pagedown(options) {
   }
   options.strings = options.strings || {};
   var getString = function (identifier) {
-    window.console.log(defaultsStrings);
-    window.console.log(identifier);
     return options.strings[identifier] || defaultsStrings[identifier];
   };
 
@@ -381,7 +379,6 @@ function TextareaState(input) {
 
   // Sets the TextareaState properties given a chunk of markdown.
   this.setChunks = function (chunk) {
-    window.console.log(chunk);
 
     chunk.before = chunk.before + chunk.startTag;
     chunk.after = chunk.endTag + chunk.after;
@@ -438,7 +435,6 @@ function UIManager(input, commandManager) {
     var fixupInputArea = function () {
 
       inputBox.focus();
-      window.console.log(chunks);
       if (chunks) {
         state.setChunks(chunks);
       }

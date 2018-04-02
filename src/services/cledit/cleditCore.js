@@ -414,7 +414,6 @@ function cledit(contentElt, scrollEltOpt) {
     }
 
     const sectionList = highlighter.parseSections(lastTextContent, true);
-    window.console.log(sectionList);
     editor.$trigger('contentChanged', lastTextContent, [0, lastTextContent], sectionList);
     if (options.selectionStart !== undefined && options.selectionEnd !== undefined) {
       editor.setSelection(options.selectionStart, options.selectionEnd);

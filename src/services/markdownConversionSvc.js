@@ -236,7 +236,6 @@ const markdownConversionSvc = {
         }
       });
     }
-    window.console.log(articlesJson);
 
     const tokens = parsingCtx.markdownState.tokens;
     const html = parsingCtx.converter.renderer.render(

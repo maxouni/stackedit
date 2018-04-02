@@ -176,6 +176,7 @@ $corner-size: 110px;
     background: #fff;
     border: 1px solid #ccc;
     padding: 30px;
+    margin-bottom: 15px;
 
     &__title {
       font-weight: bold;

@@ -2,9 +2,21 @@
   <modal-inner aria-label="Article name">
     <div class="modal__content">
       <p>Please add article name</p>
-      <form-entry label="Name or ID" error="url">
-        <input slot="field" class="textfield" type="text" v-model.trim="text" @keydown.enter="resolve()">
-      </form-entry>
+      <div class="suggest__wrap">
+        <form-entry label="Name or ID" error="url">
+          <input slot="field" class="textfield" type="text"
+                 v-on:input="updateValue($event.target.value)"
+                 @keydown.enter="resolve()"
+                 @keydown.up="changeSelected(1)"
+                 @keydown.down="changeSelected(-1)"
+                 v-model.trim="text">
+        </form-entry>
+        <div class="suggest" v-if="suggest.length">
+          <div class="suggest__item"
+               v-bind:class="{ 'suggest__item--active': suggestSelected === index}"
+               v-for="(item, index) in suggest" v-on:click="resolve()">{{item.name}}</div>
+        </div>
+      </div>
     </div>
     <div class="modal__button-bar">
       <button class="button" @click="reject()">Cancel</button>
@@ -14,21 +26,48 @@
 </template>
 
 <script>
+import axios from 'axios';
 import modalTemplate from './common/modalTemplate';
 
 export default modalTemplate({
   data: () => ({
     text: '',
+    suggest: [],
+    suggestSelected: 0,
+    cache: {},
   }),
   methods: {
-    resolve() {
-      if (!this.text) {
-        this.setError('text');
-      } else {
-        const callback = this.config.callback;
-        this.config.resolve();
-        callback('{"article":{"article-date":"2017-11-23T00:00:00.000Z","publication-name":"arXiv.org","featured":1,"doi":null,"keywords":[],"citedby-count":0,"title":"A blockchain-based Decentralized System for proper handling of temporary\\n  Employment contracts","link-pdf":"http://arxiv.org/pdf/1711.09758v1","id":2,"view-publisher":null,"promoted":false,"authors":["Ibba&nbsp;Simona","Pinna&nbsp;Andrea"],"views":28}}');
+    updateValue(value) {
+      if (value in this.cache) {
+        this.suggest = value;
       }
+      axios.get(`https://apograf-test.herokuapp.com/api/suggest?limit=10&search-string=${value}`)
+        .then((response) => {
+          this.cache[value] = response.data.suggests;
+          this.suggest = response.data.suggests;
+        });
+    },
+    changeSelected(dir) {
+      const nextIndex = this.suggestSelected;
+
+      if (nextIndex + dir < 0) {
+        this.suggestSelected = this.suggest.length - 1;
+      } else if (nextIndex + dir === this.suggest.length) {
+        this.suggestSelected = 0;
+      } else {
+        this.suggestSelected = nextIndex + dir;
+      }
+    },
+    resolve() {
+      this.text = '';
+      this.suggest = [];
+      // if (!this.text) {
+      //   this.setError('text');
+      // } else {
+      //   const callback = this.config.callback;
+      //   this.config.resolve();
+      //   callback(this.text);
+      // }
     },
     reject() {
       const callback = this.config.callback;
@@ -38,3 +77,30 @@ export default modalTemplate({
   },
 });
 </script>
+
+<style lang="scss">
+  .suggest {
+    position: absolute;
+    width: 355px;
+    left: 2px;
+    top: 66px;
+    background: #fff;
+    z-index: 2;
+
+    &__item {
+      padding: 2px 10px;
+
+      &--active {
+        background: #a6cbdb;
+      }
+    }
+
+    &__wrap {
+      position: relative;
+    }
+  }
+
+  .modal__inner-2 {
+    overflow: visible;
+  }
+</style>

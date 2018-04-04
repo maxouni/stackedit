@@ -6,15 +6,16 @@
         <form-entry label="Name or ID" error="url">
           <input slot="field" class="textfield" type="text"
                  v-on:input="updateValue($event.target.value)"
-                 @keydown.enter="resolve()"
-                 @keydown.up="changeSelected(1)"
-                 @keydown.down="changeSelected(-1)"
+                 @keydown.enter="resolve($event)"
+                 @keydown.up="changeSelected(-1)"
+                 @keydown.down="changeSelected(1)"
                  v-model.trim="text">
         </form-entry>
         <div class="suggest" v-if="suggest.length">
           <div class="suggest__item"
                v-bind:class="{ 'suggest__item--active': suggestSelected === index}"
-               v-for="(item, index) in suggest" v-on:click="resolve()">{{item.name}}</div>
+               v-for="(item, index) in suggest"
+               v-on:click="suggestSelected = index;resolve($event);">{{item.title}}</div>
         </div>
       </div>
     </div>
@@ -26,8 +27,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import modalTemplate from './common/modalTemplate';
+import articleSvc from '../../services/articleSvc';
 
 export default modalTemplate({
   data: () => ({
@@ -41,11 +42,10 @@ export default modalTemplate({
       if (value in this.cache) {
         this.suggest = value;
       }
-      axios.get(`https://apograf-test.herokuapp.com/api/suggest?limit=10&search-string=${value}`)
-        .then((response) => {
-          this.cache[value] = response.data.suggests;
-          this.suggest = response.data.suggests;
-        });
+      articleSvc.getArticlesSuggest(value, (response) => {
+        this.cache[value] = response;
+        this.suggest = response;
+      });
     },
     changeSelected(dir) {
       const nextIndex = this.suggestSelected;
@@ -58,16 +58,25 @@ export default modalTemplate({
         this.suggestSelected = nextIndex + dir;
       }
     },
-    resolve() {
+    resolve(event) {
+      if (event) event.preventDefault();
+      const callback = this.config.callback;
+      const idArticle = this.suggest[this.suggestSelected].id;
+
       this.text = '';
       this.suggest = [];
-      // if (!this.text) {
-      //   this.setError('text');
-      // } else {
-      //   const callback = this.config.callback;
-      //   this.config.resolve();
-      //   callback(this.text);
-      // }
+
+      if (idArticle in window.cacheArticle) {
+        this.config.resolve();
+        callback(idArticle);
+      } else {
+        articleSvc.getArticlesByID(idArticle, (response) => {
+          if (response) {
+            this.config.resolve();
+            callback(idArticle);
+          }
+        });
+      }
     },
     reject() {
       const callback = this.config.callback;

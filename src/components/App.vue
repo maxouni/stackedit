@@ -21,6 +21,10 @@ import sponsorSvc from '../services/sponsorSvc';
 import tempFileSvc from '../services/tempFileSvc';
 import timeSvc from '../services/timeSvc';
 import store from '../store';
+import articleSvc from '../services/articleSvc';
+
+window.cacheArticle = {};
+articleSvc.update();
 
 // Global directives
 Vue.directive('focus', {

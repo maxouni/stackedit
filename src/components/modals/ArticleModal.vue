@@ -70,7 +70,7 @@ export default modalTemplate({
         this.config.resolve();
         callback(idArticle);
       } else {
-        articleSvc.getArticlesByID(idArticle, (response) => {
+        articleSvc.getArticleByID(idArticle, (response) => {
           if (response) {
             this.config.resolve();
             callback(idArticle);

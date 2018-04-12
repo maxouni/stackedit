@@ -5,6 +5,7 @@ import diffUtils from './diffUtils';
 import store from '../store';
 import EditorClassApplier from '../components/common/EditorClassApplier';
 import PreviewClassApplier from '../components/common/PreviewClassApplier';
+import articleSvc from './articleSvc';
 
 let clEditor;
 // let discussionIds = {};
@@ -159,8 +160,26 @@ export default {
         syncDiscussionMarkers(content, false);
         options.content = content.text;
       }
-
-      clEditor.init(options);
+      /** Articles in text get */
+      const articleInText = [];
+      opts.sectionParser(content.text).forEach((item) => {
+        const itemReg = /Article\[\]\((.+?)\)/g.exec(item.text);
+        if (itemReg) {
+          articleInText.push(parseInt(itemReg[1], 10));
+        }
+      });
+      if (articleInText.length) {
+        articleSvc.getArticlesByIDs(articleInText, (response) => {
+          if (response.length) {
+            response.forEach((item) => {
+              window.cacheArticle[parseInt(item.id, 10)] = item;
+              clEditor.init(options);
+            });
+          }
+        });
+      } else {
+        clEditor.init(options);
+      }
     }
   },
   applyContent() {

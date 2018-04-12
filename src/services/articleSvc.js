@@ -8,8 +8,16 @@ export default {
   },
   update() {
     window.console.log('update');
-    this.getArticlesByID(96, () => {});
-    this.getArticlesByID(95, () => {});
+  },
+  getArticlesByIDs(ids, success, error) {
+    this.http.get(`${this.server}/api/article-by-ids?article-ids=${ids.join('&article-ids=')}`).then(
+      (response) => {
+        success(response.data.articles);
+      },
+      (response) => {
+        error(response);
+      },
+    );
   },
   getArticlesSuggest(text, success, error) {
     this.http.get(`${this.server}/api/article-suggest?search_string=${text}`).then(
@@ -21,7 +29,7 @@ export default {
       },
     );
   },
-  getArticlesByID(id, success, error) {
+  getArticleByID(id, success, error) {
     this.http.get(`${this.server}/api/article/${id}`).then(
       (response) => {
         if (response.data.article) {

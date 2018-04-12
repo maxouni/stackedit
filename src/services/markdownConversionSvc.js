@@ -270,7 +270,7 @@ const markdownConversionSvc = {
         htmlSectionList[index] = `<article class="article">
            <div class="article__title"><a href="https://apograf.io/articles/${article.id}">${article.title}</a></div>
            <div class="article__authors">${article.authors.join(', ')}</div>
-           <div class="article__publication">${article['publication-name']}</div>
+           <div class="article__publication">${article.publication_name}</div>
            </article>`;
       }
     });

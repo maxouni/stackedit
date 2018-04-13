@@ -3,6 +3,8 @@ import Prism from 'prismjs';
 import MarkdownIt from 'markdown-it';
 import markdownGrammarSvc from './markdownGrammarSvc';
 import extensionSvc from './extensionSvc';
+import articleSvc from './articleSvc';
+// import editorSvc from './editorSvc';
 
 const htmlSectionMarker = '\uF111\uF222\uF333\uF444';
 const diffMatchPatch = new DiffMatchPatch();
@@ -265,13 +267,18 @@ const markdownConversionSvc = {
     let currentIndex = 0;
     htmlSectionList.forEach((item, index) => {
       if (/Article<a(.*?)><\/a>/g.exec(item)) {
-        const article = window.cacheArticle[articlesJson[currentIndex]];
-        currentIndex += 1;
-        htmlSectionList[index] = `<article class="article">
-           <div class="article__title"><a href="https://apograf.io/articles/${article.id}">${article.title}</a></div>
-           <div class="article__authors">${article.authors.join(', ')}</div>
-           <div class="article__publication">${article.publication_name}</div>
-           </article>`;
+        if (articlesJson[currentIndex] in window.cacheArticle) {
+          const article = window.cacheArticle[articlesJson[currentIndex]];
+          currentIndex += 1;
+          htmlSectionList[index] = `<article class="article">
+             <div class="article__title"><a href="https://apograf.io/articles/${article.id}">${article.title}</a></div>
+             <div class="article__authors">${article.authors.join(', ')}</div>
+             <div class="article__publication">${article.publication_name}</div>
+             </article>`;
+        } else {
+          articleSvc.getArticleByID(articlesJson[currentIndex]);
+          htmlSectionList[index] = '<article class="article">Article not load, please change text in editor.</article>';
+        }
       }
     });
 

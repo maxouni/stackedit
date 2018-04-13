@@ -1,7 +1,7 @@
 <template>
-  <div class="icon-provider" :class="'icon-provider--' + classState">
-    <icon-sync-off v-if="!classState"></icon-sync-off>
-  </div>
+  <!--<div class="icon-provider" :class="'icon-provider&#45;&#45;' + classState">-->
+    <!--<icon-sync-off v-if="!classState"></icon-sync-off>-->
+  <!--</div>-->
 </template>
 
 <script>

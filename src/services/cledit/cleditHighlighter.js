@@ -66,7 +66,7 @@ function Highlighter(editor) {
       return sectionList;
     }
 
-    const newSectionList = (editor.options.sectionParser
+    const newSectionList = (editor.hasOwnProperty('options') && editor.options && editor.options.sectionParser
       ? editor.options.sectionParser(content)
       : [content])
       .cl_map(sectionText => new Section(sectionText));

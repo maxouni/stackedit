@@ -12,24 +12,28 @@ export default {
   getArticlesByIDs(ids, success, error) {
     this.http.get(`${this.server}/api/article-by-ids?article-ids=${ids.join('&article-ids=')}`).then(
       (response) => {
-        if (typeof success === 'function')
+        if (typeof success === 'function') {
           success(response.data.articles);
+        }
       },
       (response) => {
-        if (typeof error === 'function')
+        if (typeof error === 'function') {
           error(response);
+        }
       },
     );
   },
   getArticlesSuggest(text, success, error) {
     this.http.get(`${this.server}/api/article-suggest?search_string=${text}`).then(
       (response) => {
-        if (typeof success === 'function')
+        if (typeof success === 'function') {
           success(response.data.articles);
+        }
       },
       (response) => {
-        if (typeof error === 'function')
+        if (typeof error === 'function') {
           error(response);
+        }
       },
     );
   },
@@ -38,13 +42,15 @@ export default {
       (response) => {
         if (response.data.article) {
           window.cacheArticle[id] = response.data.article;
-          if (typeof success === 'function')
+          if (typeof success === 'function') {
             success(response.data.article);
+          }
         }
       },
       (response) => {
-        if (typeof error === 'function')
+        if (typeof error === 'function') {
           error(response);
+        }
       },
     );
   },

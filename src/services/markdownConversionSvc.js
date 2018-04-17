@@ -273,7 +273,7 @@ const markdownConversionSvc = {
           htmlSectionList[index] = `<article class="c-article">
              <div class="c-article__title"><a class="a--accent a--border-off" href="https://apograf.io/articles/${article.id}">${article.title}</a></div>
              <div class="c-article__authors">${article.authors.join(', ')}</div>
-             <div class="c-article__publication">${article.publication_name}</div>
+             <div class="c-article__publication">${article.publication_name ? article.publication_name : article['publication-name']}</div>
              </article>`;
         } else {
           articleSvc.getArticleByID(articlesJson[currentIndex]);

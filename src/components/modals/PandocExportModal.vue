@@ -27,7 +27,6 @@
 
 <script>
 import FileSaver from 'file-saver';
-import sponsorSvc from '../../services/sponsorSvc';
 import networkSvc from '../../services/networkSvc';
 import editorSvc from '../../services/editorSvc';
 import googleHelper from '../../services/providers/helpers/googleHelper';
@@ -48,7 +47,6 @@ export default modalTemplate({
           const sponsorToken = this.$store.getters['workspace/sponsorToken'];
           return sponsorToken && googleHelper.refreshToken(sponsorToken);
         }),
-        sponsorSvc.getToken(),
       ])
         .then(([sponsorToken, token]) => networkSvc.request({
           method: 'POST',

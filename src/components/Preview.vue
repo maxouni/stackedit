@@ -172,7 +172,7 @@ $corner-size: 110px;
 }
 
 .preview {
-  .article {
+  .c-article {
     background: #fff;
     border: 1px solid #ccc;
     padding: 30px;

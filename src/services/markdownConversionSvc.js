@@ -270,14 +270,14 @@ const markdownConversionSvc = {
         if (articlesJson[currentIndex] in window.cacheArticle) {
           const article = window.cacheArticle[articlesJson[currentIndex]];
           currentIndex += 1;
-          htmlSectionList[index] = `<article class="article">
-             <div class="article__title"><a href="https://apograf.io/articles/${article.id}">${article.title}</a></div>
-             <div class="article__authors">${article.authors.join(', ')}</div>
-             <div class="article__publication">${article.publication_name}</div>
+          htmlSectionList[index] = `<article class="c-article">
+             <div class="c-article__title"><a class="a--accent a--border-off" href="https://apograf.io/articles/${article.id}">${article.title}</a></div>
+             <div class="c-article__authors">${article.authors.join(', ')}</div>
+             <div class="c-article__publication">${article.publication_name}</div>
              </article>`;
         } else {
           articleSvc.getArticleByID(articlesJson[currentIndex]);
-          htmlSectionList[index] = '<article class="article">Article not load, please change text in editor.</article>';
+          htmlSectionList[index] = '<article class="c-article">Article not load, please change text in editor.</article>';
         }
       }
     });

@@ -133,6 +133,7 @@ function Highlighter(editor) {
     }
 
     const highlight = (section) => {
+      if (!editor || !editor.options) return;
       const html = editor.options.sectionHighlighter(section).replace(/\n/g, lfHtml);
       const sectionElt = document.createElement('div');
       sectionElt.className = 'cledit-section';

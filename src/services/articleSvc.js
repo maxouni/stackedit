@@ -12,20 +12,24 @@ export default {
   getArticlesByIDs(ids, success, error) {
     this.http.get(`${this.server}/api/article-by-ids?article-ids=${ids.join('&article-ids=')}`).then(
       (response) => {
-        success(response.data.articles);
+        if (typeof success === 'function')
+          success(response.data.articles);
       },
       (response) => {
-        error(response);
+        if (typeof error === 'function')
+          error(response);
       },
     );
   },
   getArticlesSuggest(text, success, error) {
     this.http.get(`${this.server}/api/article-suggest?search_string=${text}`).then(
       (response) => {
-        success(response.data.articles);
+        if (typeof success === 'function')
+          success(response.data.articles);
       },
       (response) => {
-        error(response);
+        if (typeof error === 'function')
+          error(response);
       },
     );
   },
@@ -34,11 +38,13 @@ export default {
       (response) => {
         if (response.data.article) {
           window.cacheArticle[id] = response.data.article;
-          success(response.data.article);
+          if (typeof success === 'function')
+            success(response.data.article);
         }
       },
       (response) => {
-        error(response);
+        if (typeof error === 'function')
+          error(response);
       },
     );
   },

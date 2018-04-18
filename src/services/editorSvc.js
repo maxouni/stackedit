@@ -13,6 +13,7 @@ import editorSvcDiscussions from './editorSvcDiscussions';
 import editorSvcUtils from './editorSvcUtils';
 import utils from './utils';
 import store from '../store';
+import articleSvc from './articleSvc';
 
 const allowDebounce = (action, wait) => {
   let timeoutId;
@@ -95,6 +96,31 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
         section.text, this.prismGrammars[section.data]),
       sectionParser: (text) => {
         this.parsingCtx = markdownConversionSvc.parseSections(this.converter, text);
+
+        /** Articles in text get */
+        const articleInText = [];
+        this.parsingCtx.sections.forEach((item) => {
+          const itemReg = /Article\[\]\((.+?)\)/g.exec(item.text);
+          if (itemReg) {
+            const id = parseInt(itemReg[1], 10);
+            if (!(id in window.cacheArticle)) {
+              articleInText.push(id);
+            }
+          }
+        });
+
+        if (articleInText.length) {
+          articleSvc.getArticlesByIDs(articleInText, (response) => {
+            if (response.length) {
+              response.forEach((item) => {
+                window.cacheArticle[parseInt(item.id, 10)] = item;
+              });
+
+              this.convert();
+              this.refreshPreview();
+            }
+          });
+        }
         return this.parsingCtx.sections;
       },
       getCursorFocusRatio: () => {

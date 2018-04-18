@@ -6,9 +6,6 @@ export default {
   get() {
     return window.cacheArticle;
   },
-  update() {
-    window.console.log('update');
-  },
   getArticlesByIDs(ids, success, error) {
     this.http.get(`${this.server}/api/article-by-ids?article-ids=${ids.join('&article-ids=')}`).then(
       (response) => {

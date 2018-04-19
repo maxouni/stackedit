@@ -115,8 +115,9 @@
     "worker-loader": "^0.8.1"
   },
   "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
+    "node": ">=8.9.3",
+    "yarn": "0.23.3",
+    "npm": ">=4.0.0"
   },
   "browserslist": [
     "> 1%",

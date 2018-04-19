@@ -21,7 +21,7 @@
     "patch": "npm version patch -m \"Tag v%s\"",
     "minor": "npm version minor -m \"Tag v%s\"",
     "major": "npm version major -m \"Tag v%s\"",
-    "heroku-postbuild": "npm build"
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "aws-sdk": "^2.133.0",

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-  server: 'https://apograf-test.herokuapp.com',
+  server: AUTOCOMPLETE_ARTICLES,
   http: axios,
   get() {
     return window.cacheArticle;

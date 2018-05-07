@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-  server: AUTOCOMPLETE_ARTICLES,
+  server: 'https://apograf.io',
   http: axios,
   get() {
     return window.cacheArticle;
